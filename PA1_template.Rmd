@@ -41,7 +41,7 @@ summary(activity)
 ```
 
 ## What is mean total number of steps taken per day?
-
+Drawing the histogram:
 ```{r}
 activity_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
 names(activity_steps) <- c("date", "steps")
@@ -60,7 +60,7 @@ median(activity_steps$steps)
 ```
 
 ## What is the average daily activity pattern?
-
+Drawing a plot of Average no. of step per interval:
 
 ```{r}
 avg_daily_activity <- aggregate(activity$steps, by=list(activity$interval), FUN=mean, na.rm=TRUE)
