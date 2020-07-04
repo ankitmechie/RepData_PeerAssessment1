@@ -43,29 +43,29 @@ summary(activity)
 ## What is mean total number of steps taken per day?
 Drawing the histogram:
 ```{r}
-activity_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
-names(activity_steps) <- c("date", "steps")
-hist(activity_steps$steps, main = "Total number of steps taken per day", 
+total_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
+names(total_steps) <- c("date", "steps")
+hist(total_steps$steps, main = "Total number of steps taken per day", 
      xlab = "Total steps taken per day", 
      ylab="Frequency",col = "red",
      ylim = c(0,30), breaks = seq(0,25000, by=2500))
 ```
 mean total number of steps taken per day is:
 ```{r}
-mean(activity_steps$steps)
+mean(total_steps$steps)
 ```
 median total number of steps taken per day is:
 ```{r}
-median(activity_steps$steps)
+median(total_steps$steps)
 ```
 
 ## What is the average daily activity pattern?
 Drawing a plot of Average no. of step per interval:
 
 ```{r}
-avg_daily_activity <- aggregate(activity$steps, by=list(activity$interval), FUN=mean, na.rm=TRUE)
-names(avg_daily_activity) <- c("interval", "mean")
-plot(avg_daily_activity$interval, avg_daily_activity$mean, type = "l", 
+average_daily <- aggregate(activity$steps, by=list(activity$interval), FUN=mean, na.rm=TRUE)
+names(average_daily) <- c("interval", "mean")
+plot(average_daily$interval, average_daily$mean, type = "l", 
      col="red", 
      xlab="Interval", 
      ylab="Average number of steps", main="Average number of steps per intervals")
@@ -74,7 +74,7 @@ plot(avg_daily_activity$interval, avg_daily_activity$mean, type = "l",
 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps:
 
 ```{r}
-avg_daily_activity[which.max(avg_daily_activity$mean), ]$interval
+average_daily[which.max(average_daily$mean), ]$interval
 ```
 
 ## Imputing missing values
@@ -87,32 +87,32 @@ sum(is.na(activity$steps))
 Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
 ```{r}
-miss_steps <- avg_daily_activity$mean[match(activity$interval, avg_daily_activity$interval)]
+missing_data <- average_daily$mean[match(activity$interval, average_daily$interval)]
 ```
 
 Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ```{r}
 activity_miss <- transform(activity, steps = ifelse(is.na(activity$steps), 
-                                                    yes = miss_steps, no = activity$steps))
-total_steps_miss <- aggregate(steps ~ date, activity_miss, sum)
-names(total_steps_miss) <- c("date", "daily_steps")
+                                                    yes = missing_data, no = activity$steps))
+total_missing_data <- aggregate(steps ~ date, activity_miss, sum)
+names(total_missing_data) <- c("date", "daily_steps")
 ```
 
 Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ```{r}
-hist(total_steps_miss$daily_steps, col = "red", xlab = "Total steps per day", 
+hist(total_missing_data$daily_steps, col = "red", xlab = "Total steps per day", 
      main = "Total number of steps taken each day", 
      breaks = seq(0,25000,by=2500))
 ```
 mean total number of steps taken per day is:
 ```{r}
-mean(total_steps_miss$steps)
+mean(total_missing_data$steps)
 ```
 median total number of steps taken per day is:
 ```{r}
-median(total_steps_miss$steps)
+median(total_missing_data$steps)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
