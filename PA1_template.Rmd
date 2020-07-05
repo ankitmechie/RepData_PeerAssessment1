@@ -1,11 +1,11 @@
 ---
 title: "Peer-graded Assignment: Course Project 1"
 author: "Ankit Kumar Verma"
-date: "03/07/2020"
+date: "05/07/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
 ```
 # Introduction
@@ -42,19 +42,26 @@ summary(activity)
 
 ## What is mean total number of steps taken per day?
 Drawing the histogram:
-```{r}
+```{r,message=FALSE}
 total_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
 names(total_steps) <- c("date", "steps")
 hist(total_steps$steps, main = "Total number of steps taken per day", 
      xlab = "Total steps taken per day", 
      ylab="Frequency",col = "red",
      ylim = c(0,30), breaks = seq(0,25000, by=2500))
+
+png("plot1.png", width=480, height=480)
+hist(total_steps$steps, main = "Total number of steps taken per day", 
+     xlab = "Total steps taken per day", 
+     ylab="Frequency",col = "red",
+     ylim = c(0,30), breaks = seq(0,25000, by=2500))
+dev.off()
 ```
-mean total number of steps taken per day is:
+## mean total number of steps taken per day is:
 ```{r}
 mean(total_steps$steps)
 ```
-median total number of steps taken per day is:
+## median total number of steps taken per day is:
 ```{r}
 median(total_steps$steps)
 ```
@@ -62,16 +69,22 @@ median(total_steps$steps)
 ## What is the average daily activity pattern?
 Drawing a plot of Average no. of step per interval:
 
-```{r}
+```{r,message=FALSE}
 average_daily <- aggregate(activity$steps, by=list(activity$interval), FUN=mean, na.rm=TRUE)
 names(average_daily) <- c("interval", "mean")
 plot(average_daily$interval, average_daily$mean, type = "l", 
      col="red", 
      xlab="Interval", 
      ylab="Average number of steps", main="Average number of steps per intervals")
+png("plot2.png", width=480, height=480)
+plot(average_daily$interval, average_daily$mean, type = "l", 
+     col="red", 
+     xlab="Interval", 
+     ylab="Average number of steps", main="Average number of steps per intervals")
+dev.off()
 ```
 
-5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps:
+##5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps:
 
 ```{r}
 average_daily[which.max(average_daily$mean), ]$interval
@@ -127,11 +140,16 @@ activity$datetype <- sapply(activity$date, function(x) {
                 y})
 ```
 Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
-```{r}
+```{r,message=FALSE}
 activity_date <- aggregate(steps~interval + datetype, activity, mean, na.rm = TRUE)
-plot<- ggplot(activity_date,aes(x = interval , y = steps)) +
+ggplot(activity_date,aes(x = interval , y = steps)) +
        geom_line() +
        labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps") +
        facet_wrap(~datetype, ncol = 1, nrow=2)
-print(plot)
+png("plot3.png", width=480, height=480)
+ggplot(activity_date,aes(x = interval , y = steps)) +
+       geom_line() +
+       labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps") +
+       facet_wrap(~datetype, ncol = 1, nrow=2)
+dev.off()
 ```
